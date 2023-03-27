@@ -45,11 +45,19 @@ public class playerScript : MonoBehaviour
         {
             rb.velocity = new Vector2(-runSpeed, rb.velocity.y);
             leftCommand = false;
+            //Flip do Sprite que afeta os objetos filhos
+            Vector3 scale = transform.localScale;
+            scale.x = -1;
+            transform.localScale = scale;
         }
         if (rightCommand)
         {
             rb.velocity = new Vector2(runSpeed, rb.velocity.y);
             rightCommand = false;
+            //Flip do Sprite que afeta os objetos filhos
+            Vector3 scale = transform.localScale;
+            scale.x = 1;
+            transform.localScale = scale;
         }
     }
 }
