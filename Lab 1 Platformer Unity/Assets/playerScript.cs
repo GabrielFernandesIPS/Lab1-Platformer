@@ -4,57 +4,86 @@ using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    [SerializeField] private bool jumpCommand;   
-    [SerializeField] private float jumpPower;
-    [SerializeField] private float runSpeed;
-    private bool leftCommand;
-    private bool rightCommand;
+    private Rigidbody2D _rb;
+
+    [SerializeField] private float _jumpPower = 2.0f;
+    [SerializeField] private float _runSpeed = 0.5f;
+    [SerializeField] private bool _isGrounded;
+    [SerializeField] private GameObject _groundTestLineStart;
+    [SerializeField] private GameObject _groundTestLineEnd;
+    [SerializeField] private bool _doubleJumpEnabled;
+    private bool _jumpEnded;
+    private bool _canAirJump;
+
+
+    private bool _jumpCommand;
+    private bool _leftCommand;
+    private bool _rightCommand;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        jumpPower = 2.0f;
-        runSpeed = 1.0f;
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
+        //Controles de Salto
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            jumpCommand = true;
+            _jumpCommand = true;
         }
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
-            leftCommand = true;
+            _jumpEnded = true;
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        //Controles de Movimento
+        if (Input.GetKey(KeyCode.A))
         {
-            rightCommand = true;
+            _leftCommand = true;
+        }
+
+        else if (Input.GetKey(KeyCode.D))
+        {
+            _rightCommand = true;
         }
     }
 
     private void FixedUpdate()
     {
-        if (jumpCommand)
+        _isGrounded = Physics2D.Linecast(_groundTestLineEnd.transform.position,
+                        _groundTestLineStart.transform.position);
+
+        if (_jumpCommand && _isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            jumpCommand = false;    
+            _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
+            _jumpCommand = false;
+            _canAirJump = true;
         }
-        if (leftCommand)
+        if (_doubleJumpEnabled && _jumpCommand && !_isGrounded && _canAirJump && _rb.velocity.y < 0)
         {
-            rb.velocity = new Vector2(-runSpeed, rb.velocity.y);
-            leftCommand = false;
-            //Flip do Sprite que afeta os objetos filhos
+            _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
+            _jumpCommand = false;
+            _canAirJump = false;
+        }
+        if (_jumpEnded)
+        {
+            Vector2 v = new Vector2(_rb.velocity.x, _rb.velocity.y / 2.0f);
+            _rb.velocity = v;
+            _jumpEnded = false;
+        }
+        if (_leftCommand)
+        {
+            _rb.velocity = new Vector2(-_runSpeed, _rb.velocity.y);
+            _leftCommand = false;
             Vector3 scale = transform.localScale;
             scale.x = -1;
             transform.localScale = scale;
         }
-        if (rightCommand)
+
+        else if (_rightCommand)
         {
-            rb.velocity = new Vector2(runSpeed, rb.velocity.y);
-            rightCommand = false;
-            //Flip do Sprite que afeta os objetos filhos
+            _rb.velocity = new Vector2(_runSpeed, _rb.velocity.y);
+            _rightCommand = false;
             Vector3 scale = transform.localScale;
             scale.x = 1;
             transform.localScale = scale;
