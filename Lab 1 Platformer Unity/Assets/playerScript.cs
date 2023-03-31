@@ -5,6 +5,7 @@ using UnityEngine;
 public class playerScript : MonoBehaviour
 {
     private Rigidbody2D _rb;
+    private Animator _animator;
 
     [SerializeField] private float _jumpPower = 2.0f;
     [SerializeField] private float _runSpeed = 0.5f;
@@ -23,6 +24,7 @@ public class playerScript : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -53,6 +55,20 @@ public class playerScript : MonoBehaviour
         _isGrounded = Physics2D.Linecast(_groundTestLineEnd.transform.position,
                         _groundTestLineStart.transform.position);
 
+        
+        string animation = "IdleAnimation";
+        if (!_isGrounded)
+        {
+            if (_rb.velocity.y > 0)
+            {
+                animation = "JumpAnimation";
+            }
+            else
+            {
+                animation = "FallAnimation";
+            }
+        }
+                
         if (_jumpCommand && _isGrounded)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
@@ -78,6 +94,7 @@ public class playerScript : MonoBehaviour
             Vector3 scale = transform.localScale;
             scale.x = -1;
             transform.localScale = scale;
+            animation = "RunAnimation";
         }
 
         else if (_rightCommand)
@@ -87,6 +104,9 @@ public class playerScript : MonoBehaviour
             Vector3 scale = transform.localScale;
             scale.x = 1;
             transform.localScale = scale;
+            animation = "RunAnimation";
         }
+
+        _animator.Play(animation);
     }
 }
