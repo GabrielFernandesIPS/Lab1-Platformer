@@ -11,26 +11,30 @@ public class playerScript : MonoBehaviour
     [SerializeField] private bool _isGrounded;
     [SerializeField] private GameObject _groundTestLineStart;
     [SerializeField] private GameObject _groundTestLineEnd;
+    private bool _jumpEnded;
 
 
     private bool _jumpCommand;
     private bool _leftCommand;
     private bool _rightCommand;
 
-    // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        //Controles de Salto
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _jumpCommand = true;
         }
-
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _jumpEnded = true;
+        }
+        //Controles de Movimento
         if (Input.GetKey(KeyCode.A))
         {
             _leftCommand = true;
@@ -52,7 +56,12 @@ public class playerScript : MonoBehaviour
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
             _jumpCommand = false;
         }
-
+        if (_jumpEnded)
+        {
+            Vector2 v = new Vector2(_rb.velocity.x, _rb.velocity.y / 2.0f);
+            _rb.velocity = v;
+            _jumpEnded = false;
+        }
         if (_leftCommand)
         {
             _rb.velocity = new Vector2(-_runSpeed, _rb.velocity.y);
