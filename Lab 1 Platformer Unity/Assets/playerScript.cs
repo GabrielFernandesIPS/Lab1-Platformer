@@ -11,7 +11,9 @@ public class playerScript : MonoBehaviour
     [SerializeField] private bool _isGrounded;
     [SerializeField] private GameObject _groundTestLineStart;
     [SerializeField] private GameObject _groundTestLineEnd;
+    [SerializeField] private bool _doubleJumpEnabled;
     private bool _jumpEnded;
+    private bool _canAirJump;
 
 
     private bool _jumpCommand;
@@ -55,6 +57,13 @@ public class playerScript : MonoBehaviour
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
             _jumpCommand = false;
+            _canAirJump = true;
+        }
+        if (_doubleJumpEnabled && _jumpCommand && !_isGrounded && _canAirJump && _rb.velocity.y < 0)
+        {
+            _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
+            _jumpCommand = false;
+            _canAirJump = false;
         }
         if (_jumpEnded)
         {
