@@ -4,57 +4,68 @@ using UnityEngine;
 
 public class playerScript : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    [SerializeField] private bool jumpCommand;   
-    [SerializeField] private float jumpPower;
-    [SerializeField] private float runSpeed;
-    private bool leftCommand;
-    private bool rightCommand;
+    private Rigidbody2D _rb;
 
+    [SerializeField] private float _jumpPower = 2.0f;
+    [SerializeField] private float _runSpeed = 0.5f;
+    [SerializeField] private bool _isGrounded;
+    [SerializeField] private GameObject _groundTestLineStart;
+    [SerializeField] private GameObject _groundTestLineEnd;
+
+
+    private bool _jumpCommand;
+    private bool _leftCommand;
+    private bool _rightCommand;
+
+    // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        jumpPower = 2.0f;
-        runSpeed = 1.0f;
+        _rb = GetComponent<Rigidbody2D>();
     }
 
+    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            jumpCommand = true;
+            _jumpCommand = true;
         }
-        if (Input.GetKeyDown(KeyCode.A))
+
+        if (Input.GetKey(KeyCode.A))
         {
-            leftCommand = true;
+            _leftCommand = true;
         }
-        if (Input.GetKeyDown(KeyCode.D))
+
+        else if (Input.GetKey(KeyCode.D))
         {
-            rightCommand = true;
+            _rightCommand = true;
         }
     }
 
     private void FixedUpdate()
     {
-        if (jumpCommand)
+        _isGrounded = Physics2D.Linecast(_groundTestLineEnd.transform.position,
+                        _groundTestLineStart.transform.position);
+
+        if (_jumpCommand && _isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            jumpCommand = false;    
+            _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
+            _jumpCommand = false;
         }
-        if (leftCommand)
+
+        if (_leftCommand)
         {
-            rb.velocity = new Vector2(-runSpeed, rb.velocity.y);
-            leftCommand = false;
-            //Flip do Sprite que afeta os objetos filhos
+            _rb.velocity = new Vector2(-_runSpeed, _rb.velocity.y);
+            _leftCommand = false;
             Vector3 scale = transform.localScale;
             scale.x = -1;
             transform.localScale = scale;
         }
-        if (rightCommand)
+
+        else if (_rightCommand)
         {
-            rb.velocity = new Vector2(runSpeed, rb.velocity.y);
-            rightCommand = false;
-            //Flip do Sprite que afeta os objetos filhos
+            _rb.velocity = new Vector2(_runSpeed, _rb.velocity.y);
+            _rightCommand = false;
             Vector3 scale = transform.localScale;
             scale.x = 1;
             transform.localScale = scale;
