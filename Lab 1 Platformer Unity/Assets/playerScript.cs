@@ -15,6 +15,9 @@ public class playerScript : MonoBehaviour
     [SerializeField] private bool _doubleJumpEnabled;
     private bool _jumpEnded;
     private bool _canAirJump;
+    [SerializeField] private float _jumpCommandTime;
+    [SerializeField] private float _jumpBufferTime;
+    
 
 
     private bool _jumpCommand;
@@ -33,6 +36,7 @@ public class playerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _jumpCommand = true;
+            _jumpCommandTime = Time.unscaledTime;
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
@@ -69,7 +73,7 @@ public class playerScript : MonoBehaviour
             }
         }
                 
-        if (_jumpCommand && _isGrounded)
+        if (_jumpCommand && _isGrounded && Time.unscaledTime - _jumpCommandTime < _jumpBufferTime)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
             _jumpCommand = false;
