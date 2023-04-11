@@ -23,7 +23,7 @@ public class PlayerLife : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.CompareTag("Bullet"))
+		if (collision.CompareTag("PlayerBullet"))
 		{
 			healthAmount -= 2f;
 		}
