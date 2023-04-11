@@ -23,10 +23,10 @@ public class PlayerLife : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.CompareTag("Bullet"))
-		{
-			healthAmount -= 2f;
-		}
+		// if (collision.CompareTag("Bullet"))
+		// {
+		// 	healthAmount -= 2f;
+		// }
 
 		if (healthAmount <= 0)
 		{
