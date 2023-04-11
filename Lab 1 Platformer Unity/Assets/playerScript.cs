@@ -17,6 +17,9 @@ public class playerScript : MonoBehaviour
     private bool _canAirJump;
     [SerializeField] private float _jumpCommandTime;
     [SerializeField] private float _jumpBufferTime;
+    [SerializeField] private float _groundedTime;
+    [SerializeField] private bool _canJump;
+    [SerializeField] private float _coyoteTime;
     
 
 
@@ -59,7 +62,14 @@ public class playerScript : MonoBehaviour
         _isGrounded = Physics2D.Linecast(_groundTestLineEnd.transform.position,
                         _groundTestLineStart.transform.position);
 
-        
+        if(_isGrounded){
+            _groundedTime = Time.unscaledTime;
+            _canJump = true;
+        }else{
+            if(Time.unscaledTime - _groundedTime > _coyoteTime){
+                _canJump = false;
+            }
+        }
         string animation = "IdleAnimation";
         if (!_isGrounded)
         {
@@ -73,7 +83,7 @@ public class playerScript : MonoBehaviour
             }
         }
                 
-        if (_jumpCommand && _isGrounded && Time.unscaledTime - _jumpCommandTime < _jumpBufferTime)
+        if (_jumpCommand && _canJump && Time.unscaledTime - _jumpCommandTime < _jumpBufferTime)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
             _jumpCommand = false;
