@@ -8,36 +8,43 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float _enemyLife;
     [SerializeField] private GameObject _enemyBullet;
     private Rigidbody2D _enemyRb;
-    Collider2D[] _enemyLineSight;
-    Collider2D[] _enemyAttackRange;
+    private Collider2D[] _enemyLineSight;
+    private Collider2D[] _enemyAttackRange;
+    [SerializeField] private float _sightRange;
+    [SerializeField] private float _attackRange;
 
 
     void Start()
     {
         _enemyRb = GetComponent<Rigidbody2D>();
+      
         
     }
 
     
     void Update()
     {
-        _enemyLineSight = Physics2D.OverlapCircleAll(transform.position, 1.5f);
-        _enemyAttackRange = Physics2D.OverlapCircleAll(transform.position, 1f);
+        //Definicao da range do campo de visao e alcance do ataque
+        _enemyLineSight = Physics2D.OverlapCircleAll(transform.position, _sightRange);
+        _enemyAttackRange = Physics2D.OverlapCircleAll(transform.position, _attackRange);
 
+        //Deteta o Jogador e Segue-o se estiver no seu campo de visão
         foreach (Collider2D collider in _enemyLineSight)
         {
             if (collider.gameObject.CompareTag("Player"))
             {
                 if(transform.position.x > collider.gameObject.transform.position.x)
                 {
-                    _enemyRb.velocity = new Vector3(_enemySpeed, _enemyRb.velocity.y);
+                    
+                    _enemyRb.velocity = new Vector3(_enemySpeed, _enemyRb.velocity.y);//Inverte a velocidade se o jogador estiver á esquerda do inimigo
                     Vector3 scale = transform.localScale;
                     scale.x = 1;
                     transform.localScale = scale;
                 }
                 else
                 {
-                    _enemyRb.velocity = new Vector3(-_enemySpeed, _enemyRb.velocity.y);
+                    
+                    _enemyRb.velocity = new Vector3(-_enemySpeed, _enemyRb.velocity.y);//Inverte a velocidade se o jogador estiver á direita do inimigo
                     Vector3 scale = transform.localScale;
                     scale.x = -1;
                     transform.localScale = scale;
@@ -45,9 +52,13 @@ public class EnemyBehaviour : MonoBehaviour
             }
             
         }
-        foreach (Collider2D collider2 in _enemyAttackRange)
+        //Deteta o Jogodar e Dispara se estiver ao seu alcance
+        foreach (Collider2D collider in _enemyAttackRange)
         {
-
+            if (collider.gameObject.CompareTag("Player"))
+            {
+                EnemyAttack();
+            }
         }
     }
 
@@ -57,7 +68,11 @@ public class EnemyBehaviour : MonoBehaviour
     }
     private void EnemyAttack()
     {
-        //Debug.Log("attack");
+        GameObject g = Instantiate(_enemyBullet, transform.position, Quaternion.identity);
+        if (transform.localScale.x < 0)
+        {
+            g.GetComponent<PlayerBullet>().InvertBullet();
+        }
     }
     public void EnemyTakeDamage(float damage)
     {

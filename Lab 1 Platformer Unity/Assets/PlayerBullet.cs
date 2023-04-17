@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerBullet : MonoBehaviour
 {
     public Vector3 Speed = Vector3.right;
-    [SerializeField] private GameObject player;
     
     // Start is called before the first frame update
     void Start()
