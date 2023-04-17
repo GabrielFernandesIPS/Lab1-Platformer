@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
@@ -13,12 +14,14 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float _sightRange;
     [SerializeField] private float _attackRange;
 
+    [SerializeField] private float _attackSpeed;
+    private float _shootDelay;
+
 
     void Start()
     {
         _enemyRb = GetComponent<Rigidbody2D>();
-      
-        
+        _shootDelay = 0;  
     }
 
     
@@ -57,15 +60,17 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if (collider.gameObject.CompareTag("Player"))
             {
-                EnemyAttack();
+                _shootDelay += Time.deltaTime;
+                if(_shootDelay > _attackSpeed)
+                {
+                    EnemyAttack();
+                    _shootDelay = 0;
+                }
+                
             }
         }
     }
 
-    private void EnemyChase()
-    {
-        _enemyRb.velocity = new Vector3(_enemySpeed, _enemyRb.velocity.y);
-    }
     private void EnemyAttack()
     {
         GameObject g = Instantiate(_enemyBullet, transform.position, Quaternion.identity);
