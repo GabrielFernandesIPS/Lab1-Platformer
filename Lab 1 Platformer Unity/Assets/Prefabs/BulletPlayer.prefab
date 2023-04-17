@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4661419971763858733}
   - component: {fileID: 4723037010359440673}
   - component: {fileID: 1754708211148819382}
-  - component: {fileID: 3739135737609972094}
   - component: {fileID: 4852148133970715472}
   m_Layer: 0
   m_Name: BulletPlayer
@@ -99,29 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4111af63db8494f4c803b40e38278d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: {x: 1, y: 0, z: 0}
-  player: {fileID: 0}
---- !u!50 &3739135737609972094
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5177861112629593693}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
+  Speed: {x: 2, y: 0, z: 0}
+  bulletDamage: 5
 --- !u!61 &4852148133970715472
 BoxCollider2D:
   m_ObjectHideFlags: 0

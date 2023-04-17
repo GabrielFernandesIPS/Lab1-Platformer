@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerBullet : MonoBehaviour
 {
     public Vector3 Speed = Vector3.right;
+    [SerializeField] private float bulletDamage;
     
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,19 @@ public class PlayerBullet : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy") && gameObject.CompareTag("PlayerBullet"))
+        {
+            collision.gameObject.GetComponent<EnemyBehaviour>().EnemyTakeDamage(bulletDamage);
+            Destroy(gameObject);
+        }
+        if (collision.gameObject.CompareTag("Player") && gameObject.CompareTag("EnemyBullet"))
+        {
+            collision.gameObject.GetComponent<playerScript>().PlayerTakeDamage(bulletDamage);
+        }
     }
 
 }

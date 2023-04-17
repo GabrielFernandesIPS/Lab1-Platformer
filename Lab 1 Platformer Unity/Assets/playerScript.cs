@@ -20,8 +20,8 @@ public class playerScript : MonoBehaviour
     [SerializeField] private float _groundedTime;
     [SerializeField] private bool _canJump;
     [SerializeField] private float _coyoteTime;
-    
 
+    [SerializeField] private float _playerLife;
 
     private bool _jumpCommand;
     private bool _leftCommand;
@@ -55,6 +55,20 @@ public class playerScript : MonoBehaviour
         {
             _rightCommand = true;
         }
+    }
+
+    public void PlayerTakeDamage(float damage)
+    {
+        _playerLife -= damage;
+        if( _playerLife <= 0 ) 
+        {
+            PlayerDeath();
+        }
+    }
+
+    private void PlayerDeath()
+    {
+        Debug.Log("Morri");
     }
 
     private void FixedUpdate()

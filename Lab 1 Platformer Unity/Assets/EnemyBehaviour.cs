@@ -89,7 +89,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     private void EnemyDeath()
     {
-        //
+        Destroy(gameObject);
     }
     public float ReturnEnemyLife()
     {
