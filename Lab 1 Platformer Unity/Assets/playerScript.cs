@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerScript : MonoBehaviour
 {
@@ -68,7 +69,7 @@ public class playerScript : MonoBehaviour
 
     private void PlayerDeath()
     {
-        Debug.Log("Morri");
+        SceneManager.LoadScene("Lose Screen");
     }
 
     private void FixedUpdate()

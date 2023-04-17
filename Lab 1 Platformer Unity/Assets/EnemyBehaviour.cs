@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyBehaviour : MonoBehaviour
 {
@@ -101,5 +102,6 @@ public class EnemyBehaviour : MonoBehaviour
     private void EnemyDeath()
     {
         Destroy(gameObject);
+        SceneManager.LoadScene("Win Screen");
     }
 }
