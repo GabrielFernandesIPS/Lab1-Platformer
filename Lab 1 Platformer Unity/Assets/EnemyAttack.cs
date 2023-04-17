@@ -18,7 +18,7 @@ public class EnemyAttack : MonoBehaviour
 	
 	void Update() 
 	{
-		CheckIfTimeToFire();
+		//CheckIfTimeToFire();
 	}
 
 	void CheckIfTimeToFire()
