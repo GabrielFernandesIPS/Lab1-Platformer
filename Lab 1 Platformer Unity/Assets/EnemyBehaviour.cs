@@ -12,19 +12,28 @@ public class EnemyBehaviour : MonoBehaviour
 
     void Start()
     {
-        _enemyRb = GetComponent<Rigidbody2D>();        
+        _enemyRb = GetComponent<Rigidbody2D>();
     }
 
     
     void Update()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+        Collider2D[] colliders2 = Physics2D.OverlapCircleAll(transform.position, 1f);
         foreach (Collider2D collider in colliders)
         {
             if (collider.gameObject.CompareTag("Player"))
             {
-                EnemyChase();
+                if(transform.position.x > collider.gameObject.transform.position.x)
+                {
+                    _enemyRb.velocity = new Vector3(_enemySpeed, _enemyRb.velocity.y);
+                }
+                else
+                {
+                    _enemyRb.velocity = new Vector3(-_enemySpeed, _enemyRb.velocity.y);
+                }
             }
+            
         }
     }
 
@@ -34,7 +43,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     private void EnemyAttack()
     {
-        //
+        //Debug.Log("attack");
     }
     public void EnemyTakeDamage(float damage)
     {
