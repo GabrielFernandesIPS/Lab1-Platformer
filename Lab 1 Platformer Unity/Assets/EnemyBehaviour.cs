@@ -8,18 +8,22 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float _enemyLife;
     [SerializeField] private GameObject _enemyBullet;
     private Rigidbody2D _enemyRb;
+    Collider2D[] colliders;
+    Collider2D[] colliders2;
 
 
     void Start()
     {
         _enemyRb = GetComponent<Rigidbody2D>();
+        
     }
 
     
     void Update()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
-        Collider2D[] colliders2 = Physics2D.OverlapCircleAll(transform.position, 1f);
+        colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+        colliders2 = Physics2D.OverlapCircleAll(transform.position, 1f);
+
         foreach (Collider2D collider in colliders)
         {
             if (collider.gameObject.CompareTag("Player"))
@@ -35,6 +39,7 @@ public class EnemyBehaviour : MonoBehaviour
             }
             
         }
+        //foreach (Collider2D collider in colliders)
     }
 
     private void EnemyChase()
