@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerScript : MonoBehaviour
 {
     private Rigidbody2D _rb;
+    private Animator _animator;
 
     [SerializeField] private float _jumpPower = 2.0f;
     [SerializeField] private float _runSpeed = 0.5f;
@@ -14,7 +16,13 @@ public class playerScript : MonoBehaviour
     [SerializeField] private bool _doubleJumpEnabled;
     private bool _jumpEnded;
     private bool _canAirJump;
+    [SerializeField] private float _jumpCommandTime;
+    [SerializeField] private float _jumpBufferTime;
+    [SerializeField] private float _groundedTime;
+    [SerializeField] private bool _canJump;
+    [SerializeField] private float _coyoteTime;
 
+    [SerializeField] private float _playerLife;
 
     private bool _jumpCommand;
     private bool _leftCommand;
@@ -23,6 +31,7 @@ public class playerScript : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -31,6 +40,7 @@ public class playerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _jumpCommand = true;
+            _jumpCommandTime = Time.unscaledTime;
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
@@ -48,12 +58,47 @@ public class playerScript : MonoBehaviour
         }
     }
 
+    public void PlayerTakeDamage(float damage)
+    {
+        _playerLife -= damage;
+        if( _playerLife <= 0 ) 
+        {
+            PlayerDeath();
+        }
+    }
+
+    private void PlayerDeath()
+    {
+        SceneManager.LoadScene("Lose Screen");
+    }
+
     private void FixedUpdate()
     {
         _isGrounded = Physics2D.Linecast(_groundTestLineEnd.transform.position,
                         _groundTestLineStart.transform.position);
 
-        if (_jumpCommand && _isGrounded)
+        if(_isGrounded){
+            _groundedTime = Time.unscaledTime;
+            _canJump = true;
+        }else{
+            if(Time.unscaledTime - _groundedTime > _coyoteTime){
+                _canJump = false;
+            }
+        }
+        string animation = "IdleAnimation";
+        if (!_isGrounded)
+        {
+            if (_rb.velocity.y > 0)
+            {
+                animation = "JumpAnimation";
+            }
+            else
+            {
+                animation = "FallAnimation";
+            }
+        }
+                
+        if (_jumpCommand && _canJump && Time.unscaledTime - _jumpCommandTime < _jumpBufferTime)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpPower);
             _jumpCommand = false;
@@ -78,6 +123,7 @@ public class playerScript : MonoBehaviour
             Vector3 scale = transform.localScale;
             scale.x = -1;
             transform.localScale = scale;
+            animation = "RunAnimation";
         }
 
         else if (_rightCommand)
@@ -87,6 +133,9 @@ public class playerScript : MonoBehaviour
             Vector3 scale = transform.localScale;
             scale.x = 1;
             transform.localScale = scale;
+            animation = "RunAnimation";
         }
+
+        _animator.Play(animation);
     }
 }
