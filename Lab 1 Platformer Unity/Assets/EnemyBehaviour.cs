@@ -34,7 +34,6 @@ public class EnemyBehaviour : MonoBehaviour
     void Update()
     {
         string animation = "EnemyIdle";
-        Debug.Log(Time.deltaTime);
         //Definicao da range do campo de visao e alcance do ataque
         _enemyLineSight = Physics2D.OverlapCircleAll(transform.position, _sightRange);
         _enemyAttackRange = Physics2D.OverlapCircleAll(transform.position, _attackRange);
@@ -72,7 +71,6 @@ public class EnemyBehaviour : MonoBehaviour
                 _shootDelay += Time.deltaTime;
                 if(_shootDelay > _attackSpeed)
                 {
-
                     EnemyAttack();
                     _shootDelay = 0;
                 }
@@ -104,11 +102,4 @@ public class EnemyBehaviour : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    public float ReturnEnemyLife()
-    {
-        return _enemyLife;
-    }
-
-
-
 }
