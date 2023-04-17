@@ -17,9 +17,15 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float _attackSpeed;
     private float _shootDelay;
 
+    private Animator _enemyAnimator;
+
+   
+
+
 
     void Start()
     {
+        _enemyAnimator = GetComponent<Animator>();
         _enemyRb = GetComponent<Rigidbody2D>();
         _shootDelay = 0;  
     }
@@ -27,6 +33,8 @@ public class EnemyBehaviour : MonoBehaviour
     
     void Update()
     {
+        string animation = "EnemyIdle";
+        Debug.Log(Time.deltaTime);
         //Definicao da range do campo de visao e alcance do ataque
         _enemyLineSight = Physics2D.OverlapCircleAll(transform.position, _sightRange);
         _enemyAttackRange = Physics2D.OverlapCircleAll(transform.position, _attackRange);
@@ -36,22 +44,23 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if (collider.gameObject.CompareTag("Player"))
             {
-                if(transform.position.x > collider.gameObject.transform.position.x)
+                animation = "EnemyChase";
+                if (transform.position.x > collider.gameObject.transform.position.x)
                 {
-                    
-                    _enemyRb.velocity = new Vector3(_enemySpeed, _enemyRb.velocity.y);//Inverte a velocidade se o jogador estiver á esquerda do inimigo
+                    _enemyRb.velocity = new Vector3(-_enemySpeed, _enemyRb.velocity.y);//Inverte a velocidade se o jogador estiver á esquerda do inimigo
                     Vector3 scale = transform.localScale;
                     scale.x = 1;
                     transform.localScale = scale;
                 }
                 else
                 {
-                    
-                    _enemyRb.velocity = new Vector3(-_enemySpeed, _enemyRb.velocity.y);//Inverte a velocidade se o jogador estiver á direita do inimigo
+                    _enemyRb.velocity = new Vector3(_enemySpeed, _enemyRb.velocity.y);//Inverte a velocidade se o jogador estiver á direita do inimigo
                     Vector3 scale = transform.localScale;
                     scale.x = -1;
                     transform.localScale = scale;
                 }
+             
+
             }
             
         }
@@ -63,14 +72,17 @@ public class EnemyBehaviour : MonoBehaviour
                 _shootDelay += Time.deltaTime;
                 if(_shootDelay > _attackSpeed)
                 {
+
                     EnemyAttack();
                     _shootDelay = 0;
                 }
+            
                 
             }
         }
+        _enemyAnimator.Play(animation);
     }
-
+    
     private void EnemyAttack()
     {
         GameObject g = Instantiate(_enemyBullet, transform.position, Quaternion.identity);
@@ -78,6 +90,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             g.GetComponent<PlayerBullet>().InvertBullet();
         }
+
     }
     public void EnemyTakeDamage(float damage)
     {
