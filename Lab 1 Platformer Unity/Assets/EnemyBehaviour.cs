@@ -18,7 +18,14 @@ public class EnemyBehaviour : MonoBehaviour
     
     void Update()
     {
-        EnemyChase();
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.gameObject.CompareTag("Player"))
+            {
+                EnemyChase();
+            }
+        }
     }
 
     private void EnemyChase()
